@@ -1,0 +1,113 @@
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useSelector, useDispatch } from 'react-redux'
+
+
+export default function Dashboard({navigation}){
+
+    const transactions = useSelector(state=>state.transactions)
+    useEffect(()=>{
+        getBalance(transactions)
+    }, [])
+    const [totalBalance, setTotalBalance] = useState('0')
+    const getBalance = (transactions)=>{
+        console.log('yaha hu mai')
+        const totalBalance = transactions.reduce((accumulator, transaction) => {
+            console.log(accumulator,'accumulator')
+            if (transaction.type === "income") {
+                return accumulator + transaction.amount;
+              } else if (transaction.type === "expense") {
+                return accumulator - transaction.amount;
+              }
+          }, 0)
+          console.log(totalBalance, 'oooooo')
+        setTotalBalance(totalBalance)
+    }
+  return (
+    <SafeAreaView>
+        <View style={styles.main}>
+            <View style={styles.horizontalButtonSet}>
+                <TouchableOpacity onPress={()=>navigation.navigate('AddIncome')} style={[styles.button, {backgroundColor:'green'}]}>
+                    <AntDesign name="pluscircleo" size={25} color="#FFF" />
+                    <Text style={styles.buttonText}>Add Income</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>navigation.navigate('AddExpense')} style={[styles.button, {backgroundColor:'red'}]}>
+                    <AntDesign name="minuscircleo" size={25} color="#FFF" />
+                    <Text style={styles.buttonText}>Add Expense</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.horizontalButtonSet}>
+                <TouchableOpacity onPress={()=>navigation.navigate('Transactions')} style={[styles.button, {backgroundColor:'blue'}]}>
+                    <AntDesign name="menuunfold" size={25} color="#FFF" />
+                    <Text style={styles.buttonText}>Transactions</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+        <View style={styles.monthTransaction} >
+            <Text style={[styles.buttonText, {color:'black'}]}>Current Month</Text>
+            <View style={styles.monthDetails}>
+                <View style={{flexDirection:'row', width:'99%', height:60}}>
+                    <View style={{width:'33%',borderWidth:1, alignItems:'center'}}>
+                        <Text style={[styles.buttonText, {color:'green'}]}>Income</Text>
+                        <Text style={[styles.buttonText, {color:'black'}]}>0</Text>
+                    </View>
+                    <View style={{width:'33%',borderWidth:1, alignItems:'center'}}>
+                        <Text style={[styles.buttonText, {color:'green'}]}>Expense</Text>
+                        <Text style={[styles.buttonText, {color:'black'}]}>0</Text>
+                    </View>
+                    <View style={{width:'33%',borderWidth:1, alignItems:'center'}}>
+                        <Text style={[styles.buttonText, {color:'green'}]}>Balance</Text>
+                        <Text style={[styles.buttonText, {color:'black'}]}>0</Text>
+                    </View>
+                </View>
+                <View style={{paddingHorizontal:15,flexDirection:'row', width:'98%', height:40, justifyContent:'space-between',alignItems:'center', borderWidth:1}}>
+                    <Text style={[styles.buttonText, {color:'black'}]}>Previous Balance</Text>
+                    <Text style={[styles.buttonText, {color:'green'}]}>0</Text>
+                </View>
+                <View style={{paddingHorizontal:15, flexDirection:'row', width:'98%', height:40, justifyContent:'space-between',alignItems:'center', borderWidth:1}}>
+                    <Text style={[styles.buttonText, {color:'black'}]}>Balance</Text>
+                    <Text style={[styles.buttonText, {color:'green'}]}>{totalBalance}</Text>
+                </View>
+            </View>
+        </View>
+
+    </SafeAreaView>
+  )
+}
+
+const styles = StyleSheet.create({
+    main:{
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    horizontalButtonSet:{
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    button:{
+        alignItems:'center',
+        justifyContent:'center',
+        borderRadius:5,
+        height:75,
+        width:'45%',
+        margin:5
+    },
+    buttonText:{
+        color:'#FFF',
+        fontSize:18
+    },
+    monthTransaction:{
+        width:'95%',
+        elevation:5,
+        justifyContent:'center',
+        alignItems:'center',
+        margin:5
+    },
+    monthDetails:{
+        width:'98%',
+        marginVertical:5,
+        marginLeft:15
+    }
+})
