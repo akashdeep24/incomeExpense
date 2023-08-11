@@ -2,33 +2,45 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector, useDispatch } from 'react-redux'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-export default function Transactions(){
+
+export default function Transactions({navigation}){
     const transactions = useSelector(state=>state.transactions)
+    const getBalance = (transactions)=>{
+        let totalBalance = transactions.reduce((accumulator, transaction) => {
+            if(transaction.type === 'income'){
+                return accumulator + transaction.amount;
+            }
+            else if(transaction.type === 'expense'){
+                return accumulator - transaction.amount;
+            }
+          }, 0)
+        return totalBalance
+    }
+    const getExpense = (transactions)=>{
+        let expense = transactions.reduce((accumulator, transaction) => {
+            if(transaction.type === 'expense'){
+                return accumulator + transaction.amount;
+            }
+            else{
+                return accumulator
+            }
+          }, 0)
+        return expense
+    }
+    const getIncome = (transactions)=>{
+        let income = transactions.reduce((accumulator, transaction) => {
+            if(transaction.type === 'income'){
+                return accumulator + transaction.amount;
+            }
+            else{
+                return accumulator
+            }
+          }, 0)
+        return income
+    }
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.row}>
-                    <Ionicons name="arrow-back-outline" size={24} color="#FFF"/>
-                    <Text style={styles.headerText}>Transactions</Text>
-                </View>
-                <View style={styles.row}>
-                    <Ionicons name="menu" size={26} color="#FFF" style={{marginRight:10}}/>
-                    <Entypo name="dots-three-vertical" size={20} color="#FFF" />
-                </View>
-            </View>
-            <View style={styles.chips}>
-                <Text style={styles.chip}>All</Text>
-                <Text style={styles.chip}>Daily</Text>
-                <Text style={styles.chip}>Weekly</Text>
-                <Text style={styles.selectedChip}>Monthly</Text>
-                <Text style={styles.chip}>Yearly</Text>
-            </View>
             <View style={styles.mainContainer}>
-                <View style={styles.miniHeader}>
-                    <Entypo name="chevron-left" size={24} color="#FFF"/>
-                    <Text style={styles.dateText}>{'01-Aug-2023 -> 31-Aug-2023'}</Text>
-                    <Entypo name="chevron-right" size={24} color="#FFF"/>
-                </View>
                 <View style={styles.tablerHeader}>
                     <Text style={styles.tableHeaderText}>Date</Text>
                     <Text style={styles.tableHeaderText}>Category</Text>
@@ -43,7 +55,7 @@ export default function Transactions(){
                         <View style={styles.transaction}>
                             <Text>{item.date}</Text>
                             <Text>{item.category}</Text>
-                            <Text>{item.type ==='income'?item.amount:'-'}</Text>
+                            <Text>{item.type ==='income'?item.amount:'---'}</Text>
                             <Text>{item.type ==='expense'?item.amount:'---'}</Text>
                         </View>
                     )}
@@ -51,10 +63,10 @@ export default function Transactions(){
             </View>
             <View>
                 <View style={styles.row}>
-                    <TouchableOpacity style={[styles.mainButton,{backgroundColor:'green', marginRight:10}]}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('AddIncome')} style={[styles.mainButton,{backgroundColor:'green', marginRight:10}]}>
                         <Text style={styles.buttonText}>Income</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.mainButton,{backgroundColor:'red'}]}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('AddExpense')} style={[styles.mainButton,{backgroundColor:'red'}]}>
                         <Text style={styles.buttonText}>Expense</Text>
                     </TouchableOpacity>
                 </View>
@@ -62,17 +74,15 @@ export default function Transactions(){
             <View style={styles.summaryContainer}>
                 <View style={styles.row}>
                     <View style={styles.summarySection}>
-                        <Text style={[styles.summaryText,styles.incomeText]}>{'Total Income\n0'}</Text>
+                        <Text style={[styles.summaryText,styles.incomeText]}>{`Total Income\n ${getIncome(transactions)}`}</Text>
                     </View>
                     <View style={styles.summarySection}>
-                        <Text style={[styles.summaryText,styles.expenseText]}>{'Total Expense\n0'}</Text>
+                        <Text style={[styles.summaryText,styles.expenseText]}>{`Total Expense\n ${getExpense(transactions)}`}</Text>
                     </View>
                     <View style={styles.summarySection}>
-                        <Text style={styles.summaryText}>{'Balance\n0'}</Text>
+                        <Text style={styles.summaryText}>{`Balance\n ${getBalance(transactions)}`}</Text>
                     </View>
                 </View>
-                <Text style={styles.previousSummary}>Previous Balance    <Text style={styles.incomeText}>12000</Text></Text>
-                <Text style={styles.previousSummary}>Balance    <Text style={styles.incomeText}>12000</Text></Text>
             </View>
         </View>
     )

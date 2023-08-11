@@ -7,6 +7,7 @@ const transactionSlice = createSlice({
         addTransaction(state, action){
             state.push(action.payload)
         },
+        
     }
 })
 export default transactionSlice.reducer

@@ -80,7 +80,6 @@ export default function AddIncome() {
 				ShowPaymentMethods()
 				break;
 			case 'category':
-				console.log(value)
 				setCategory(value)
 				ShowCategories()
 				break;
@@ -111,7 +110,7 @@ export default function AddIncome() {
 		setShowCategories(!showCategories)
 	}
 	const submitTransaction = (amount, paymentMethod, category, date, time, note)=>{
-		dispatch(addTransaction({type:'income',amount:amount, paymentMethod:paymentMethod, category:category, date:date, time:time, note:note}))
+		dispatch(addTransaction({type:'income',amount:Number(amount), paymentMethod:paymentMethod, category:category, date:date, time:time, note:note}))
 		setAmount('0')
 		setPaymentMethod('cash')
 		setNote('')
@@ -133,22 +132,11 @@ export default function AddIncome() {
 			</View>
 			<View style={styles.field}>
 				<Text style={styles.fieldTitle}>Payment Method</Text>
-				<TextInput
-					maxLength={10}
-					onChangeText={value => onChangeValue('paymentMethod',value)}
-					value={paymentMethod}
-					style={{padding: 10}}
-				/>
+				<Text style={{padding: 10}}>{paymentMethod}</Text>
 			</View>
 			<View style={styles.field}>
 				<Text style={styles.fieldTitle}>Category</Text>
-				<TextInput
-					maxLength={10}
-					onChangeText={value => onChangeValue('category',value)}
-					value={category}
-					style={{padding: 10}}
-					keyboardType="numeric"
-				/>
+				<Text style={{padding: 10}}>{category}</Text>
 			</View>	
 			<View style={styles.field}>
 				<Text style={styles.fieldTitle}>Notes</Text>

@@ -5,24 +5,40 @@ import { useSelector, useDispatch } from 'react-redux'
 
 
 export default function Dashboard({navigation}){
-
     const transactions = useSelector(state=>state.transactions)
-    useEffect(()=>{
-        getBalance(transactions)
-    }, [])
-    const [totalBalance, setTotalBalance] = useState('0')
     const getBalance = (transactions)=>{
-        console.log('yaha hu mai')
-        const totalBalance = transactions.reduce((accumulator, transaction) => {
-            console.log(accumulator,'accumulator')
-            if (transaction.type === "income") {
+        let totalBalance = 0
+        totalBalance = transactions.reduce((accumulator, transaction) => {
+            if(transaction.type === 'income'){
                 return accumulator + transaction.amount;
-              } else if (transaction.type === "expense") {
+            }
+            else if(transaction.type === 'expense'){
                 return accumulator - transaction.amount;
-              }
+            }
           }, 0)
-          console.log(totalBalance, 'oooooo')
-        setTotalBalance(totalBalance)
+        return totalBalance
+    }
+    const getExpense = (transactions)=>{
+        let expense = transactions.reduce((accumulator, transaction) => {
+            if(transaction.type === 'expense'){
+                return accumulator + transaction.amount;
+            }
+            else{
+                return accumulator
+            }
+          }, 0)
+        return expense
+    }
+    const getIncome = (transactions)=>{
+        let income = transactions.reduce((accumulator, transaction) => {
+            if(transaction.type === 'income'){
+                return accumulator + transaction.amount;
+            }
+            else{
+                return accumulator
+            }
+          }, 0)
+        return income
     }
   return (
     <SafeAreaView>
@@ -50,24 +66,16 @@ export default function Dashboard({navigation}){
                 <View style={{flexDirection:'row', width:'99%', height:60}}>
                     <View style={{width:'33%',borderWidth:1, alignItems:'center'}}>
                         <Text style={[styles.buttonText, {color:'green'}]}>Income</Text>
-                        <Text style={[styles.buttonText, {color:'black'}]}>0</Text>
+                        <Text style={[styles.buttonText, {color:'black'}]}>{getIncome(transactions)}</Text>
                     </View>
                     <View style={{width:'33%',borderWidth:1, alignItems:'center'}}>
                         <Text style={[styles.buttonText, {color:'green'}]}>Expense</Text>
-                        <Text style={[styles.buttonText, {color:'black'}]}>0</Text>
+                        <Text style={[styles.buttonText, {color:'black'}]}>{getExpense(transactions)}</Text>
                     </View>
                     <View style={{width:'33%',borderWidth:1, alignItems:'center'}}>
                         <Text style={[styles.buttonText, {color:'green'}]}>Balance</Text>
-                        <Text style={[styles.buttonText, {color:'black'}]}>0</Text>
+                        <Text style={[styles.buttonText, {color:'black'}]}>{getBalance(transactions)}</Text>
                     </View>
-                </View>
-                <View style={{paddingHorizontal:15,flexDirection:'row', width:'98%', height:40, justifyContent:'space-between',alignItems:'center', borderWidth:1}}>
-                    <Text style={[styles.buttonText, {color:'black'}]}>Previous Balance</Text>
-                    <Text style={[styles.buttonText, {color:'green'}]}>0</Text>
-                </View>
-                <View style={{paddingHorizontal:15, flexDirection:'row', width:'98%', height:40, justifyContent:'space-between',alignItems:'center', borderWidth:1}}>
-                    <Text style={[styles.buttonText, {color:'black'}]}>Balance</Text>
-                    <Text style={[styles.buttonText, {color:'green'}]}>{totalBalance}</Text>
                 </View>
             </View>
         </View>

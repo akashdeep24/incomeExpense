@@ -7,8 +7,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useSelector, useDispatch } from 'react-redux';
+import { addTransaction } from '../Store/Reducers/transactionSlice'
+
+
 
 export default function AddExpense() {
+	const dispatch = useDispatch()
 	const todayDate = new Date();
 	const currentHour = todayDate.getHours();
 	const currentMinute = todayDate.getMinutes();
@@ -76,7 +80,6 @@ export default function AddExpense() {
 				ShowPaymentMethods()
 				break;
 			case 'category':
-				console.log(value)
 				setCategory(value)
 				ShowCategories()
 				break;
@@ -106,8 +109,8 @@ export default function AddExpense() {
 	const ShowCategories = ()=>{
 		setShowCategories(!showCategories)
 	}
-  const submitTransaction = (amount, paymentMethod, category, date, time, note)=>{
-		dispatch(addTransaction({type:'expense',amount:amount, paymentMethod:paymentMethod, category:category, date:date, time:time, note:note}))
+	const submitTransaction = (amount, paymentMethod, category, date, time, note)=>{
+		dispatch(addTransaction({type:'expense',amount:Number(amount), paymentMethod:paymentMethod, category:category, date:date, time:time, note:note}))
 		setAmount('0')
 		setPaymentMethod('cash')
 		setNote('')
@@ -129,22 +132,13 @@ export default function AddExpense() {
 			</View>
 			<View style={styles.field}>
 				<Text style={styles.fieldTitle}>Payment Method</Text>
-				<TextInput
-					maxLength={10}
-					onChangeText={value => onChangeValue('paymentMethod',value)}
-					value={paymentMethod}
-					style={{padding: 10}}
-				/>
+				<Text style={{padding: 10}}>{paymentMethod}</Text>
+
 			</View>
 			<View style={styles.field}>
 				<Text style={styles.fieldTitle}>Category</Text>
-				<TextInput
-					maxLength={10}
-					onChangeText={value => onChangeValue('category',value)}
-					value={category}
-					style={{padding: 10}}
-					keyboardType="numeric"
-				/>
+				<Text style={{padding: 10}}>{category}</Text>
+
 			</View>	
 			<View style={styles.field}>
 				<Text style={styles.fieldTitle}>Notes</Text>
@@ -190,7 +184,7 @@ export default function AddExpense() {
 				<TouchableOpacity onPress={ShowCategories} style={styles.bottomButton}>
 					<Text style={styles.fieldTitle}>Category</Text>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={()=>submitTransaction()} style={[styles.bottomButton, {backgroundColor:'green'}]}>
+				<TouchableOpacity onPress={()=>submitTransaction(amount, paymentMethod, category, date, time, note)} style={[styles.bottomButton, {backgroundColor:'green'}]}>
 					<Text style={[styles.fieldTitle, {color:'white'}]}>Submit</Text>
 				</TouchableOpacity>
 			</View>
